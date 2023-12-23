@@ -66,6 +66,10 @@ function App() {
         });
         setAllUsers(newList);
       }
+      function removeUser(userID) {
+        let newList = allUsers.filter((au) => au.userID !== userID);
+        setAllUsers([...newList]);
+      }
       function updateWithMessages({ from, to, content }) {
         for (let i = 0; i < allUsers.length; i++) {
           const user = allUsers[i];
@@ -101,12 +105,14 @@ function App() {
       socket.on("users", getAllUsers);
       socket.on("session", setSession);
       socket.on("user connected", addNewUser);
+      socket.on("user disconnected", removeUser);
       socket.on("private message", updateWithMessages);
       return () => {
         socket.off("connect_error", handleConnectError);
         socket.off("users", getAllUsers);
         socket.off("session", setSession);
         socket.off("user connected", addNewUser);
+        socket.off("user disconnected", removeUser);
         socket.off("private message", updateWithMessages);
       };
     }

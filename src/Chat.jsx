@@ -31,6 +31,23 @@ export default function Chat({
       setNewMsg("");
     }
   };
+  const renderWhenNoUserOrNoSelectedUser = () => {
+    let message;
+    if (users.length === 1) {
+      message = "Please wait for users to join";
+    } else if (selectedUser == null) {
+      message = "Please select a user to chat with";
+    }
+    return (
+      <div
+        style={{
+          textAlign: "center",
+        }}
+      >
+        <h2>{message}</h2>
+      </div>
+    );
+  };
 
   return (
     <div className="chat-container">
@@ -59,44 +76,35 @@ export default function Chat({
         </ul>
       </div>
       <div className="chat-window">
-        <ul className="chat-messages">
-          <li className="message received">
-            <div className="wrapper">
-              <span>Hi Qi</span>
-            </div>
-          </li>
-          <li className="message sent">
-            <div className="wrapper">
-              <span>Hey honey bunny</span>
-            </div>
-          </li>
-          <li className="message sent">
-            <div className="wrapper">
-              <span>Who is the aram god?</span>
-            </div>
-          </li>
-          {currentChat.length > 0 &&
-            currentChat.map((m) => (
-              <li
-                className={
-                  "message " +
-                  (m.from === currentUser.userID ? "sent" : "received")
-                }
-              >
-                <div className="wrapper">
-                  <span>{m.content}</span>
-                </div>
-              </li>
-            ))}
-        </ul>
-        <input
-          className="chat-input"
-          type="text"
-          placeholder="begin your chat"
-          value={newMsg}
-          onChange={(e) => setNewMsg(e.target.value)}
-          onKeyDown={handleNewMsgKeyDown}
-        />
+        {users.length === 1 || selectedUser == null ? (
+          renderWhenNoUserOrNoSelectedUser()
+        ) : (
+          <>
+            <ul className="chat-messages">
+              {currentChat.length > 0 &&
+                currentChat.map((m) => (
+                  <li
+                    className={
+                      "message " +
+                      (m.from === currentUser.userID ? "sent" : "received")
+                    }
+                  >
+                    <div className="wrapper">
+                      <span>{m.content}</span>
+                    </div>
+                  </li>
+                ))}
+            </ul>
+            <input
+              className="chat-input"
+              type="text"
+              placeholder="begin your chat"
+              value={newMsg}
+              onChange={(e) => setNewMsg(e.target.value)}
+              onKeyDown={handleNewMsgKeyDown}
+            />
+          </>
+        )}
       </div>
     </div>
   );
